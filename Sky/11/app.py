@@ -1,5 +1,5 @@
 import utils
-from flask import Flask, render_template
+from flask import Flask
 
 app = Flask(__name__)
 
@@ -14,35 +14,19 @@ def page_index():
     return result
 
 
-@app.route("/candidate/<int:x>")
-def candidate_page(x):
-    name = candidates[x-1]['name']
-    position = candidates[x-1]['position']
-    picture = candidates[x-1]['picture']
-    skills = candidates[x-1]['skills']
-    return render_template('card.html', name=name, position=position, picture=picture, skills=skills)
+@app.route("/candidate/<int:candidate_id>")
+def candidate_page(candidate_id):
+    return utils.show_candidate_page(candidate_id)
 
 
-@app.route("/search/<x>")
-def search_name(x):
-    result = ''
-    for candidate in candidates:
-        if x in candidate['name'].lower():
-            result += f"<p><a href = '/candidate/{candidate['id']}'> {candidate['name']} </a></p>"
-    topic = f"""Найдено кандидатов: {result.count('a href')}"""
-    summ = topic + result
-    return summ
+@app.route("/search/<name>")
+def search_name(name):
+    return utils.search_by_name(name)
 
 
-@app.route("/skill/<x>")
-def search_skill(x):
-    result = ''
-    for candidate in candidates:
-        if x in candidate['skills'].lower():
-            result += f"<p><a href = '/candidate/{candidate['id']}'> {candidate['name']} </a></p>"
-    topic = f"""Найдено кандидатов со скилом "{x}": {result.count('a href')}"""
-    summ = topic + result
-    return summ
+@app.route("/skill/<skill>")
+def search_skill(skill):
+    return utils.search_by_skill(skill)
 
 
 app.run()
